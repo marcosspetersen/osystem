@@ -1,6 +1,7 @@
 package com.petersen.osystem.controllers;
 
 import com.petersen.osystem.dto.ServicoDTO;
+import com.petersen.osystem.entities.PagamentoStatus;
 import com.petersen.osystem.services.ServicoService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,13 @@ public class ServicoController {
     public ResponseEntity<Page<ServicoDTO>> findAll(
         @RequestParam(name = "name", defaultValue = "") String name, Pageable pageable){
         Page<ServicoDTO> dto = service.findAll(name, pageable);
+        return ResponseEntity.ok(dto);
+    }
+
+    @GetMapping("/payment")
+    public ResponseEntity<Page<ServicoDTO>> findByPayment(
+            @RequestParam(name = "status") Integer status, Pageable pageable){
+        Page<ServicoDTO> dto = service.findByPayment(status, pageable);
         return ResponseEntity.ok(dto);
     }
 

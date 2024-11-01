@@ -15,6 +15,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -36,11 +40,11 @@ public class ServicoService {
         return result.map(x -> new ServicoDTO(x));
     }
 
-//    @Transactional(readOnly = true)
-//    public Page<ServicoDTO> findByPayment(PagamentoStatus status, Pageable pageable) {
-//        Page<Servico> result = servicoRepository.searchByPayment(status, pageable);
-//        return result.map(x -> new ServicoDTO(x));
-//    }
+    @Transactional(readOnly = true)
+    public Page<ServicoDTO> findByPayment(Integer status, Pageable pageable) {
+        Page<Servico> result = servicoRepository.searchByPayment(status, pageable);
+        return result.map(x -> new ServicoDTO(x));
+    }
 
     @Transactional
     public ServicoDTO insert(ServicoDTO dto) {
@@ -53,8 +57,8 @@ public class ServicoService {
 
     @Transactional
     public ServicoDTO update(Long id, ServicoDTO dto) {
-        verificaPagamento(dto);
         try {
+            verificaPagamento(dto);
             Servico entity = servicoRepository.getReferenceById(id);
             copyDtoToEntity(dto, entity);
             entity = servicoRepository.save(entity);
@@ -90,10 +94,13 @@ public class ServicoService {
     }
 
     private void verificaPagamento (ServicoDTO dto) {
-        if (dto.getValorPago() == null || dto.getValorPago() == 0 || dto.getDataPagamento() == null) {
+        if (dto.getValorPago() == null || dto.getValorPago() == 0) {
             dto.setStatus(PagamentoStatus.PEDENTE);
-        } else {
+        } else if (dto.getValorServico().equals(dto.getValorPago())) {
             dto.setStatus(PagamentoStatus.REALIZADO);
+            dto.setDataPagamento(Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant()));
+        } else {
+            dto.setStatus(PagamentoStatus.PARCIAL);
         }
     }
 }

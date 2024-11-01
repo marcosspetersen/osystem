@@ -25,7 +25,7 @@ public class Servico {
 
     @Temporal(TemporalType.DATE)
     private Date dataPagamento;
-    private PagamentoStatus status;
+    private Integer status;
 
     public Servico() {
     }
@@ -40,7 +40,7 @@ public class Servico {
         this.valorServico = valorServico;
         this.valorPago = valorPago;
         this.dataPagamento = dataPagamento;
-        this.status = status;
+        setStatus(status);
     }
 
     public Long getId() {
@@ -108,10 +108,12 @@ public class Servico {
     }
 
     public PagamentoStatus getStatus() {
-        return status;
+        return PagamentoStatus.valueOf(status);
     }
 
     public void setStatus(PagamentoStatus status) {
-        this.status = status;
+        if(status != null) {
+            this.status = status.getCode();
+        }
     }
 }

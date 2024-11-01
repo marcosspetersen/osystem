@@ -14,6 +14,6 @@ public interface ServicoRepository extends JpaRepository<Servico, Long> {
     @Query("SELECT obj FROM Servico obj WHERE UPPER(obj.nomeCliente) LIKE UPPER(CONCAT('%', :nomeCliente, '%'))")
     Page<Servico> searchByName(String nomeCliente, Pageable pageable);
 
-//    @Query("SELECT obj FROM Servico obj WHERE com.petersen.osystem.entities.PagamentoStatus = :status")
-//    Page<Servico> searchByPayment(PagamentoStatus status, Pageable pageable);
+    @Query("SELECT obj FROM Servico obj WHERE obj.status = :status")
+    Page<Servico> searchByPayment(Integer status, Pageable pageable);
 }
