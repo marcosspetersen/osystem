@@ -26,16 +26,17 @@ public class ServicoDTO {
     private String descricaoServico;
     @Positive(message = "O preço deve ser positivo")
     private Double valorServico;
+    @Positive(message = "O preço deve ser positivo")
     private Double valorPago;
     @Temporal(TemporalType.DATE)
-    private Double dataPagamento;
+    private Date dataPagamento;
     private PagamentoStatus status;
 
     public  ServicoDTO() {
     }
 
     public ServicoDTO(Long id, String nomeCliente, Date dataInicio, Date dataTermino, String descricaoServico,
-                      Double valorServico, Double valorPago, Double dataPagamento, PagamentoStatus status) {
+                      Double valorServico, Double valorPago, Date dataPagamento, PagamentoStatus status) {
         this.id = id;
         this.nomeCliente = nomeCliente;
         this.dataInicio = dataInicio;
@@ -115,11 +116,11 @@ public class ServicoDTO {
         this.valorPago = valorPago;
     }
 
-    public Double getDataPagamento() {
+    public Date getDataPagamento() {
         return dataPagamento;
     }
 
-    public void setDataPagamento(Double dataPagamento) {
+    public void setDataPagamento(Date dataPagamento) {
         this.dataPagamento = dataPagamento;
     }
 

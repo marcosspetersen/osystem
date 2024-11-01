@@ -4,8 +4,11 @@ import com.petersen.osystem.dto.ServicoDTO;
 import com.petersen.osystem.entities.PagamentoStatus;
 import com.petersen.osystem.entities.Servico;
 import com.petersen.osystem.repositories.ServicoRepository;
+import com.petersen.osystem.services.exceptions.DatabaseException;
 import com.petersen.osystem.services.exceptions.ResourceNotFoundException;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -33,23 +36,46 @@ public class ServicoService {
         return result.map(x -> new ServicoDTO(x));
     }
 
-    @Transactional(propagation = Propagation.SUPPORTS)
-    public Servico insert(ServicoDTO dto) {
-        verificaPagamentoInsert(dto);
+//    @Transactional(readOnly = true)
+//    public Page<ServicoDTO> findByPayment(PagamentoStatus status, Pageable pageable) {
+//        Page<Servico> result = servicoRepository.searchByPayment(status, pageable);
+//        return result.map(x -> new ServicoDTO(x));
+//    }
+
+    @Transactional
+    public ServicoDTO insert(ServicoDTO dto) {
+        verificaPagamento(dto);
         Servico entity = new Servico();
         copyDtoToEntity(dto, entity);
-        return servicoRepository.saveAndFlush(entity);
+        entity = servicoRepository.save(entity);
+        return new ServicoDTO(entity);
     }
 
     @Transactional
-    public Servico update(Servico servico) {
-        return servicoRepository.save(servico);
+    public ServicoDTO update(Long id, ServicoDTO dto) {
+        verificaPagamento(dto);
+        try {
+            Servico entity = servicoRepository.getReferenceById(id);
+            copyDtoToEntity(dto, entity);
+            entity = servicoRepository.save(entity);
+            return new ServicoDTO(entity);
+        }
+        catch (EntityNotFoundException e) {
+            throw new ResourceNotFoundException("Recurso nao encontrado");
+        }
     }
 
-    @Transactional
+    @Transactional(propagation = Propagation.SUPPORTS)
     public void delete(Long id) {
-        Servico servico = servicoRepository.findById(id).get();
-        servicoRepository.delete(servico);
+        if (!servicoRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Recurso não encontrado");
+        }
+        try {
+            servicoRepository.deleteById(id);
+        }
+        catch (DataIntegrityViolationException e) {
+            throw new DatabaseException("Falha de integridade referencial");
+        }
     }
 
     private void copyDtoToEntity(ServicoDTO dto, Servico entity) {
@@ -63,7 +89,7 @@ public class ServicoService {
         entity.setStatus(dto.getStatus());
     }
 
-    private void verificaPagamentoInsert (ServicoDTO dto) {
+    private void verificaPagamento (ServicoDTO dto) {
         if (dto.getValorPago() == null || dto.getValorPago() == 0 || dto.getDataPagamento() == null) {
             dto.setStatus(PagamentoStatus.PEDENTE);
         } else {

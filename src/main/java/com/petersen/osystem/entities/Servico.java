@@ -1,17 +1,15 @@
 package com.petersen.osystem.entities;
 
 import jakarta.persistence.*;
-import lombok.Data;
 
 import java.util.Date;
 
 @Entity
-@Table(name= "servico")
-@Data
+@Table(name= "tb_servico")
 public class Servico {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nomeCliente;
 
@@ -20,25 +18,26 @@ public class Servico {
 
     @Temporal(TemporalType.DATE)
     private Date dataTermino;
-
+    @Column(columnDefinition = "TEXT")
     private String descricaoServico;
     private Double valorServico;
     private Double valorPago;
 
     @Temporal(TemporalType.DATE)
-    private Double dataPagamento;
+    private Date dataPagamento;
     private PagamentoStatus status;
 
-    public Servico() {}
+    public Servico() {
+    }
 
     public Servico(Long id, String nomeCliente, Date dataInicio, Date dataTermino, String descricaoServico,
-                   Double valorservico, Double valorPago, Double dataPagamento, PagamentoStatus status) {
+                   Double valorServico, Double valorPago, Date dataPagamento, PagamentoStatus status) {
         this.id = id;
         this.nomeCliente = nomeCliente;
         this.dataInicio = dataInicio;
         this.dataTermino = dataTermino;
         this.descricaoServico = descricaoServico;
-        this.valorServico = valorservico;
+        this.valorServico = valorServico;
         this.valorPago = valorPago;
         this.dataPagamento = dataPagamento;
         this.status = status;
@@ -100,11 +99,11 @@ public class Servico {
         this.valorPago = valorPago;
     }
 
-    public Double getDataPagamento() {
+    public Date getDataPagamento() {
         return dataPagamento;
     }
 
-    public void setDataPagamento(Double dataPagamento) {
+    public void setDataPagamento(Date dataPagamento) {
         this.dataPagamento = dataPagamento;
     }
 
