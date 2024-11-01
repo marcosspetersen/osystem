@@ -1,0 +1,8 @@
+
+INSERT INTO tb_servico (nome_cliente, data_inicio, data_termino, descricao_servico, valor_servico, valor_pago, data_pagamento, status) VALUES ('José Roberto', '2024-07-11', '2024-08-01', 'servico feito na casa da mae de jose', 2000.0, 2000.0, '2024-08-01', 1);
+INSERT INTO tb_servico (nome_cliente, data_inicio, data_termino, descricao_servico, valor_servico, valor_pago, data_pagamento, status) VALUES ('Marlon Botelho', '2024-07-18', '2024-08-06', 'servico de reparo em carro', 3000.0, 3000.0, '2024-08-04', 1);
+INSERT INTO tb_servico (nome_cliente, data_inicio, data_termino, descricao_servico, valor_servico, valor_pago, data_pagamento, status) VALUES ('Roberta Santos', '2024-07-22', '2024-08-15', 'servico feito na maquina de lavar, reparo novo', 1000.0, 1000.0, '2024-08-25', 1);
+INSERT INTO tb_servico (nome_cliente, data_inicio, data_termino, descricao_servico, valor_servico, valor_pago, data_pagamento, status) VALUES ('Lauro Marinho', '2024-07-29', '2024-08-20', 'servico de pintura de casa', 2500.0, 2500.0, '2024-08-22', 1);
+INSERT INTO tb_servico (nome_cliente, data_inicio, data_termino, descricao_servico, valor_servico, valor_pago, data_pagamento, status) VALUES ('Manuela Coelho', '2024-08-05', '2024-08-11', 'servico montagem de movel', 200.0, 0, null, 0);
+INSERT INTO tb_servico (nome_cliente, data_inicio, data_termino, descricao_servico, valor_servico, valor_pago, data_pagamento, status) VALUES ('Paula Resende', '2024-08-14', '2024-08-16', 'servico de reparo na janela da casa', 300.0, 250.0, null, 1);
+INSERT INTO tb_servico (nome_cliente, data_inicio, data_termino, descricao_servico, valor_servico, valor_pago, data_pagamento, status) VALUES ('Gislaine Castanho', '2024-09-19', '2024-10-10', 'servico reforma de banheiro', 4500.0, 0, null, 0);

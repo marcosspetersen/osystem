@@ -46,7 +46,7 @@ public class ServicoController {
         return ResponseEntity.ok(dto);
     }
 
-    @DeleteMapping
+    @DeleteMapping(value = "/{id}")
     public ResponseEntity<ServicoDTO> delete(@PathVariable Long id) {
         service.delete(id);
         return ResponseEntity.noContent().build();

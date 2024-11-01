@@ -4,9 +4,7 @@ import com.petersen.osystem.entities.PagamentoStatus;
 import com.petersen.osystem.entities.Servico;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 
 import java.util.Date;
 
@@ -16,7 +14,7 @@ public class ServicoDTO {
     @Size(min = 3, max = 80, message = "Nome precisar ter de 3 a 80 caracteres")
     @NotBlank(message = "Campo requerido")
     private String nomeCliente;
-    @NotBlank
+    @NotNull
     @Temporal(TemporalType.DATE)
     private Date dataInicio;
     @Temporal(TemporalType.DATE)
@@ -28,6 +26,7 @@ public class ServicoDTO {
     private Double valorServico;
     @Positive(message = "O preço deve ser positivo")
     private Double valorPago;
+    @PastOrPresent
     @Temporal(TemporalType.DATE)
     private Date dataPagamento;
     private PagamentoStatus status;
