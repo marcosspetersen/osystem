@@ -69,6 +69,20 @@ public class ServicoService {
         }
     }
 
+    @Transactional
+    public ServicoDTO cancelarServico(Long id, ServicoDTO dto) {
+        try {
+            dto.setStatus(PagamentoStatus.CANCELADO);
+            Servico entity = servicoRepository.getReferenceById(id);
+            copyDtoToEntity(dto, entity);
+            entity = servicoRepository.save(entity);
+            return new ServicoDTO(entity);
+        }
+        catch (EntityNotFoundException e) {
+            throw new ResourceNotFoundException("Recurso nao encontrado");
+        }
+    }
+
     @Transactional(propagation = Propagation.SUPPORTS)
     public void delete(Long id) {
         if (!servicoRepository.existsById(id)) {

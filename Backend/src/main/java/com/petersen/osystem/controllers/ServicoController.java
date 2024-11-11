@@ -54,6 +54,12 @@ public class ServicoController {
         return ResponseEntity.ok(dto);
     }
 
+    @PutMapping("/canceled/{id}")
+    public ResponseEntity<ServicoDTO> cancelarServico(@PathVariable Long id, @Valid @RequestBody ServicoDTO dto) {
+        dto = service.cancelarServico(id, dto);
+        return ResponseEntity.ok(dto);
+    }
+
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<ServicoDTO> delete(@PathVariable Long id) {
         service.delete(id);

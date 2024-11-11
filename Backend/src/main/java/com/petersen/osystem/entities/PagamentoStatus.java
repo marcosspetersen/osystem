@@ -1,7 +1,5 @@
 package com.petersen.osystem.entities;
 
-import com.petersen.osystem.services.exceptions.ResourceNotFoundException;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 
 public enum PagamentoStatus {
     PEDENTE(1),
