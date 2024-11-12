@@ -1,10 +1,10 @@
 import logo from './logo.svg';
 import './App.css';
-import Servico from './servico/Servico';
+import Servicos from './servico/Servicos';
 
 function App() {
   return (
-    <Servico></Servico>
+    <Servicos></Servicos>
   );
 }
 

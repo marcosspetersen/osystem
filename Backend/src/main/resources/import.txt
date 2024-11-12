@@ -1,3 +1,17 @@
+drop table if exists tb_servico
+
+create table tb_servico (
+                            id INT8 NOT NULL,
+                            nome_cliente varchar(80) NOT NULL,
+                            data_inicio date NOT NULL,
+                            data_termino date,
+                            descricao_servico varchar(300) NOT null,
+                            data_pagamento date,
+                            valor_servico float(8),
+                            valor_pago float(8),
+                            status INT2,
+                            PRIMARY KEY (ID)
+)
 
 INSERT INTO tb_servico (nome_cliente, data_inicio, data_termino, descricao_servico, valor_servico, valor_pago, data_pagamento, status) VALUES ('José Roberto', '2024-07-11', '2024-08-01', 'servico feito na casa da mae de jose', 2000.0, 2000.0, '2024-08-01', 2);
 INSERT INTO tb_servico (nome_cliente, data_inicio, data_termino, descricao_servico, valor_servico, valor_pago, data_pagamento, status) VALUES ('Marlon Botelho', '2024-07-18', '2024-08-06', 'servico de reparo em carro', 3000.0, 3000.0, '2024-08-04', 2);

@@ -1,10 +1,12 @@
 import React, {useEffect, useState} from 'react';
-import './Servico.css';
+import './Servicos.css';
+import axios from 'axios';
 
-function Servico() {
+function Servicos() {
+    const API_URL = process.env.REACT_APP_API_URL;
 
     const [servico, setServico] = useState({nomeCliente:'', dataInicio:'', 
-        dataTermino:'', descricaoServico:'', valorPago:'', dataPagamento:''});
+        dataTermino:'', descricaoServico:'', valorServico:'', valorPago:'', dataPagamento:''});
     const [servicos, setServicos] = useState([]);
 
     function handleChange(event){ 
@@ -13,7 +15,9 @@ function Servico() {
 
     function handleSubmit(event){
         event.preventDefault();
-        console.log(servico);
+        axios.post(`${API_URL}/servicos`, servico).then(result=>{
+          console.log(result);
+        });
     }
 
   return (
@@ -38,6 +42,10 @@ function Servico() {
             <input onChange={handleChange} value={servico.descricaoServico} name="descricaoServico" type="text" className='form-control'/>
           </div>
           <div>
+            <label className='form-label'>Valor Serviço</label>
+            <input onChange={handleChange} value={servico.valorServico} name="valorServico" type="number" className='form-control'/>
+          </div>
+          <div>
             <label className='form-label'>Valor Pago</label>
             <input onChange={handleChange} value={servico.valorPago} name="valorPago" type="number" className='form-control'/>
           </div>
@@ -54,4 +62,4 @@ function Servico() {
   );
 }
 
-export default Servico;
+export default Servicos;
