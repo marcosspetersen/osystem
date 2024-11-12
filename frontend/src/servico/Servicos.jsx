@@ -4,7 +4,7 @@ import axios from 'axios';
 
 function Servicos() {
     const API_URL = process.env.REACT_APP_API_URL;
-
+    
     const [servico, setServico] = useState({nomeCliente:'', dataInicio:'', 
         dataTermino:'', descricaoServico:'', valorServico:'', valorPago:'', dataPagamento:''});
     const [servicos, setServicos] = useState([]);
@@ -15,7 +15,7 @@ function Servicos() {
 
     function handleSubmit(event){
         event.preventDefault();
-        axios.post(`${API_URL}/servicos`, servico).then(result=>{
+        axios.post(`${API_URL}/servicos`, {servico}).then(result=>{
           console.log(result);
         });
     }
