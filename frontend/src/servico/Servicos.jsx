@@ -1,24 +1,66 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 import './Servicos.css';
 import axios from 'axios';
 
 function Servicos() {
-    const API_URL = process.env.REACT_APP_API_URL;
-    
-    const [servico, setServico] = useState({nomeCliente:'', dataInicio:'', 
-        dataTermino:'', descricaoServico:'', valorServico:'', valorPago:'', dataPagamento:''});
-    const [servicos, setServicos] = useState([]);
+  const API_URL = process.env.REACT_APP_API_URL;
 
-    function handleChange(event){ 
-        setServico({...servico, [event.target.name]:event.target.value});
-    }
+  const [servico, setServico] = useState({
+    nomeCliente: "", dataInicio: "",
+    dataTermino: "", descricaoServico: "", valorServico: "", valorPago: "", dataPagamento: ""
+  });
+  const [servicos, setServicos] = useState([]);
+  const [atualizar, setAtualizar] = useState();
 
-    function handleSubmit(event){
-        event.preventDefault();
-        axios.post(`${API_URL}/servicos`, {servico}).then(result=>{
-          console.log(result);
+  useEffect(() => {
+    axios(`${API_URL}/servicos`).then(result => {
+      setServicos(result.data.content);
+    });
+  }, [atualizar]);
+
+  function handleChange(event) {
+    setServico({ ...servico, [event.target.name]: event.target.value });
+  }
+
+  function limpar(){
+    setServico = ({
+      nomeCliente: "", dataInicio: "", dataTermino: "", 
+      descricaoServico: "", valorServico: "", valorPago: "", dataPagamento: ""
+   });
+  }
+
+  function handleSubmit(event) {
+    event.preventDefault();
+    if (servico.id == undefined) {
+      axios.post(`${API_URL}/servicos`, servico)
+        .then(result => {
+          setAtualizar(result)
+        }).catch(() => {
+          toast.warning('Erro ao enviar Serviço');
+        });
+    } else {
+      axios.put(`${API_URL}/servicos/${servico.id}`, servico)
+        .then(result => {
+          setAtualizar(result)
+        }).catch(() => {
+          toast.warning('Erro ao enviar Serviço');
         });
     }
+    limpar();
+  }
+
+  function excluir(id){
+    axios.delete(`${API_URL}/servicos/${id}`).then(result=>{
+      setAtualizar(result);
+    });
+  }
+
+  function cancelar(id, servico){
+    axios.put(`${API_URL}/servicos/canceled/${id}`, servico).then(result=>{
+      setAtualizar(result);
+    });
+  }
 
   return (
     <div className="container">
@@ -27,37 +69,113 @@ function Servicos() {
         <div className='col-6'>
           <div>
             <label className='form-label'>Nome do Cliente</label>
-            <input onChange={handleChange} value={servico.nomeCliente} name="nomeCliente" type="text" className='form-control'/>
+            <input
+              onChange={handleChange}
+              value={servico.nomeCliente}
+              name="nomeCliente" type="text"
+              className='form-control'
+            />
           </div>
           <div>
             <label className='form-label'>Data de Inicio</label>
-            <input onChange={handleChange} value={servico.dataInicio} name="dataInicio" type="date" className='form-control'/>
+            <input onChange={handleChange}
+              value={servico.dataInicio}
+              name="dataInicio"
+              type="date"
+              className='form-control'
+            />
           </div>
           <div>
             <label className='form-label'>Data de Término</label>
-            <input onChange={handleChange} value={servico.dataTermino} name="dataTermino" type="date" className='form-control'/>
+            <input
+              onChange={handleChange}
+              value={servico.dataTermino || ""}
+              name="dataTermino" type="date"
+              className='form-control'
+            />
           </div>
           <div>
             <label className='form-label'>Descrição do Serviço</label>
-            <input onChange={handleChange} value={servico.descricaoServico} name="descricaoServico" type="text" className='form-control'/>
+            <input
+              onChange={handleChange}
+              value={servico.descricaoServico}
+              name="descricaoServico"
+              type="text"
+              className='form-control'
+            />
           </div>
           <div>
             <label className='form-label'>Valor Serviço</label>
-            <input onChange={handleChange} value={servico.valorServico} name="valorServico" type="number" className='form-control'/>
+            <input
+              onChange={handleChange}
+              value={servico.valorServico || ""}
+              name="valorServico"
+              type="number"
+              className='form-control'
+            />
           </div>
           <div>
             <label className='form-label'>Valor Pago</label>
-            <input onChange={handleChange} value={servico.valorPago} name="valorPago" type="number" className='form-control'/>
+            <input
+              onChange={handleChange}
+              value={servico.valorPago || ""}
+              name="valorPago"
+              type="number"
+              className='form-control'
+            />
           </div>
           <div>
             <label className='form-label'>Data de Pagamento</label>
-            <input onChange={handleChange} value={servico.dataPagamento} name="dataPagamento" type="date" className='form-control'/>
+            <input
+              onChange={handleChange}
+              value={servico.dataPagamento || ""}
+              name="dataPagamento"
+              type="date"
+              className='form-control'
+            />
           </div>
 
-          <br />  
+          <br />
           <input type="submit" className='btn btn-success' value="Cadastrar" />
+          &nbsp;&nbsp;
+          <button onClick={() => limpar} className="btn btn-secondary" >Limpar</button>
         </div>
       </form>
+      <hr></hr>
+      <hr></hr>
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">Nome</th>
+            <th scope="col">Descrição</th>
+            <th scope="col">Valor</th>
+            <th scope="col">Status</th>
+            <th scope="col">Opções</th>
+          </tr>
+        </thead>
+        <tbody>
+          {servicos.map(serv => (
+            <tr key={serv.id}>
+              <td>{serv.nomeCliente}</td>
+              <td>{serv.descricaoServico}</td>
+              <td>{serv.valorServico}</td>
+              <td>{serv.status}</td>
+              <td>
+                {serv.status != "CANCELADO" &&
+                  <button onClick={() => setServico(serv)} className="btn btn-primary">Alterar</button>
+                }
+                &nbsp;&nbsp;
+                {serv.status != "CANCELADO" &&
+                  <button onClick={() => excluir(serv.id)} className="btn btn-danger">Excluir</button>
+                }
+                &nbsp;&nbsp;
+                <button onClick={() => cancelar(serv.id, serv)} className="btn btn-warning">Cancelar</button>
+              </td>
+            </tr>
+          ))}
+
+        </tbody>
+      </table>
     </div>
   );
 }

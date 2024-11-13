@@ -22,9 +22,9 @@ public class ServicoDTO {
     @Size(min = 10, message = "Descrição precisa ter no ménimo 10 caracteres")
     @NotBlank(message = "Campo requerido")
     private String descricaoServico;
-    @Positive(message = "O preço deve ser positivo")
+    @PositiveOrZero(message = "O preço deve ser positivo")
     private Double valorServico;
-    @Positive(message = "O preço deve ser positivo")
+    @PositiveOrZero(message = "O preço deve ser positivo")
     private Double valorPago;
     @PastOrPresent
     @Temporal(TemporalType.DATE)
