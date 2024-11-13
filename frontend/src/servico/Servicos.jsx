@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import './Servicos.css';
+import { API_URL } from '../api';
 import axios from 'axios';
 
 function Servicos() {
-  const API_URL = process.env.REACT_APP_API_URL;
+  
 
   const [servico, setServico] = useState({
     nomeCliente: "", dataInicio: "",
