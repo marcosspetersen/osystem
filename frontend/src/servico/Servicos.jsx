@@ -23,16 +23,16 @@ function Servicos() {
     setServico({ ...servico, [event.target.name]: event.target.value });
   }
 
-  function limpar(){
-    setServico = ({
-      nomeCliente: "", dataInicio: "", dataTermino: "", 
+  function limpar() {
+    setServico ({
+      nomeCliente: "", dataInicio: "", dataTermino: "",
       descricaoServico: "", valorServico: "", valorPago: "", dataPagamento: ""
-   });
+    });
   }
 
   function handleSubmit(event) {
     event.preventDefault();
-    if (servico.id == undefined) {
+    if (servico.id === undefined) {
       axios.post(`${API_URL}/servicos`, servico)
         .then(result => {
           setAtualizar(result)
@@ -50,15 +50,27 @@ function Servicos() {
     limpar();
   }
 
-  function excluir(id){
-    axios.delete(`${API_URL}/servicos/${id}`).then(result=>{
+  function excluir(id) {
+    axios.delete(`${API_URL}/servicos/${id}`).then(result => {
+      setAtualizar(result)
+    });
+  }
+
+  function cancelar(id, servico) {
+    axios.put(`${API_URL}/servicos/canceled/${id}`, servico).then(result => {
       setAtualizar(result);
     });
   }
 
-  function cancelar(id, servico){
-    axios.put(`${API_URL}/servicos/canceled/${id}`, servico).then(result=>{
-      setAtualizar(result);
+  function findByAll() {
+    axios(`${API_URL}/servicos`).then(result => {
+      setServicos(result.data.content);
+    });
+  }
+
+  function findByPayment (number) {
+    axios.get(`${API_URL}/servicos/payment?status=${number}`).then(result => {
+      setServicos(result.data.content);
     });
   }
 
@@ -139,10 +151,19 @@ function Servicos() {
           <input type="submit" className='btn btn-success' value="Cadastrar" />
           &nbsp;&nbsp;
           <button onClick={() => limpar} className="btn btn-secondary" >Limpar</button>
+          &nbsp;&nbsp;
         </div>
       </form>
+      
+
       <hr></hr>
       <hr></hr>
+      
+      <button onClick={() => findByAll()} class="btn btn-primary" >Todos</button>&nbsp;&nbsp;
+      <button onClick={() => findByPayment(1)} type="button" class="btn btn-primary" >Pendentes</button>&nbsp;&nbsp;
+      <button onClick={() => findByPayment(2)} type="button" class="btn btn-primary" >Realizados</button>&nbsp;&nbsp;
+      <button onClick={() => findByPayment(3)} type="button" class="btn btn-primary" >Cancelados</button>&nbsp;&nbsp;
+      <button onClick={() => findByPayment(4)} type="button" class="btn btn-primary" >Parciais</button>
       <table class="table">
         <thead>
           <tr>
@@ -161,15 +182,15 @@ function Servicos() {
               <td>{serv.valorServico}</td>
               <td>{serv.status}</td>
               <td>
-                {serv.status != "CANCELADO" &&
+                {serv.status !== "CANCELADO" &&
                   <button onClick={() => setServico(serv)} className="btn btn-primary">Alterar</button>
                 }
                 &nbsp;&nbsp;
-                {serv.status != "CANCELADO" &&
-                  <button onClick={() => excluir(serv.id)} className="btn btn-danger">Excluir</button>
+                {serv.status !== "CANCELADO" &&
+                  <button onClick={() => cancelar(serv.id, serv)} className="btn btn-warning">Cancelar</button>
                 }
                 &nbsp;&nbsp;
-                <button onClick={() => cancelar(serv.id, serv)} className="btn btn-warning">Cancelar</button>
+                <button onClick={() => excluir(serv.id)} className="btn btn-danger">Excluir</button>
               </td>
             </tr>
           ))}

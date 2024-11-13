@@ -1,9 +1,13 @@
 import './App.css';
-import Servicos from './servico/Servicos';
+import Routes from './Routes';
+import {ToastContainer} from 'react-toastify';
 
 function App() {
   return (
-    <Servicos></Servicos>
+    <>
+      <Routes/>
+      <ToastContainer />
+    </>
   );
 }
 
