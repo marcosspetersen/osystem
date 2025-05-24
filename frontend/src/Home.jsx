@@ -2,6 +2,14 @@ import React, { useEffect } from 'react';
 import './Home.css'; // Importar o CSS específico da Home
 import { Link, useLocation } from 'react-router-dom'; // Para links internos, se necessário e useLocation
 
+// Importar os novos componentes de botão/card
+import BotaoVerTodosServicos from './components/home/servicos/BotaoVerTodosServicos';
+import BotaoCopiaChaves from './components/home/servicos/BotaoCopiaChaves';
+import BotaoChavesCodificadas from './components/home/servicos/BotaoChavesCodificadas';
+import BotaoTrocaFechaduras from './components/home/servicos/BotaoTrocaFechaduras';
+import BotaoAberturaPortas from './components/home/servicos/BotaoAberturaPortas';
+import BotaoAtendimento24h from './components/home/servicos/BotaoAtendimento24h';
+
 function Home() {
   const location = useLocation();
 
@@ -47,35 +55,12 @@ function Home() {
       <section id="servicos" className="servicos-section">
         <h2>Nossos Serviços</h2>
         <div className="servicos-grid">
-          {/* Este card pode levar para a página /servicos com o grid completo */}
-          <Link to="/servicos" className="servico-item" style={{ textDecoration: 'none' }}>
-            <i className="fas fa-tools"></i> {/* Ícone genérico para a categoria */}
-            <div className="servico-item-text">
-              <strong>Ver todos os Serviços</strong>
-              <p>Acesse nossa página de serviços para cadastrar e visualizar.</p>
-            </div>
-          </Link>
-          {/* Outros cards de "serviços" como no Chaveiro João, mas como exemplos visuais */}
-          <Link to="/servicos/tipo/COPIA" className="servico-item" style={{ textDecoration: 'none' }}>
-            <i className="fas fa-key"></i>
-            <div className="servico-item-text"><strong>Cópia de chaves</strong> Rápida e precisa, com garantia de funcionamento.</div>
-          </Link>
-          <Link to="/servicos/tipo/CODIFICACAO" className="servico-item" style={{ textDecoration: 'none' }}>
-            <i className="fas fa-car"></i>
-            <div className="servico-item-text"><strong>Chaves codificadas</strong> Especialistas em cópia e reprogramação.</div>
-          </Link>
-          <Link to="/servicos/tipo/TROCA" className="servico-item" style={{ textDecoration: 'none' }}>
-            <i className="fas fa-lock"></i>
-            <div className="servico-item-text"><strong>Troca de fechaduras</strong> Atualize sua segurança.</div>
-          </Link>
-          <Link to="/servicos/tipo/ABERTURA" className="servico-item" style={{ textDecoration: 'none' }}>
-            <i className="fas fa-door-open"></i>
-            <div className="servico-item-text"><strong>Abertura de portas</strong> Solução rápida sem danificar sua porta.</div>
-          </Link>
-          <Link to="/servicos/tipo/EMERGENCIA" className="servico-item" style={{ textDecoration: 'none' }}>
-            <i className="fas fa-clock"></i>
-            <div className="servico-item-text"><strong>Atendimento 24h</strong> Para emergencias a qualquer hora.</div>
-          </Link>
+          <BotaoVerTodosServicos />
+          <BotaoCopiaChaves />
+          <BotaoChavesCodificadas />
+          <BotaoTrocaFechaduras />
+          <BotaoAberturaPortas />
+          <BotaoAtendimento24h />
         </div>
       </section>
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { toast } from 'react-toastify';
 import './Servicos.css';
 import { API_URL } from '../api';
@@ -35,91 +35,134 @@ function Servicos() {
 
   const { tipoServico } = useParams();
 
+  const activeRequestController = useRef(null);
+  const lastLoadedParams = useRef({ page: undefined, status: undefined, tipo: undefined });
+  const prevAtualizar = useRef(atualizar); // Ref para detectar mudança em `atualizar`
+
   // Mapeamento de tipoServico para título da página
   const getPageTitle = () => {
     if (!tipoServico) return "Todos os Serviços";
-    const titleMap = {
+    const titleMapInternal = {
       COPIA: "Cópia de chaves",
       CODIFICACAO: "Chaves codificadas",
       TROCA: "Troca de fechaduras",
       ABERTURA: "Abertura de portas",
       EMERGENCIA: "Atendimento 24h",
     };
-    return titleMap[tipoServico.toUpperCase()] || "Serviços"; // Fallback para "Serviços"
+    return titleMapInternal[tipoServico.toUpperCase()] || "Serviços"; // Fallback para "Serviços"
   };
 
-  // Definir o titleMap fora para ser acessível no render do corpo da tabela também
-  const titleMap = {
-    COPIA: "Cópia de chaves",
-    CODIFICACAO: "Chaves codificadas",
-    TROCA: "Troca de fechaduras",
-    ABERTURA: "Abertura de portas",
-    EMERGENCIA: "Atendimento 24h",
-  };
+  const loadServicos = useCallback(async (page, status, tipo, controller, force = false) => {
+    // console.log('Tentando carregar com:', { page, status, tipo, controllerProvided: !!controller, force });
+    // console.log('Últimos params carregados:', lastLoadedParams.current);
 
-  // Função para carregar os serviços, agora reutilizável
-  const loadServicos = (page = 0, status = activeStatusFilter, tipo = tipoServico) => {
+    if (
+      !force && // Se não for forçado
+      lastLoadedParams.current.page === page &&
+      lastLoadedParams.current.status === status &&
+      lastLoadedParams.current.tipo === tipo &&
+      controller && !controller.signal.aborted
+    ) {
+      // console.log('Prevenindo recarga: Parâmetros idênticos e não forçado.');
+      return;
+    }
+
+    if (activeRequestController.current && activeRequestController.current !== controller) {
+        // console.log('Abortando requisição anterior do controller.');
+        activeRequestController.current.abort();
+    }
+    activeRequestController.current = controller;
+
     let url;
-    if (status !== null) { // Se há um filtro de status ativo (ou sendo aplicado)
+    if (status !== null) {
       url = `${API_URL}/servicos/payment?size=10&page=${page}&status=${status}`;
-      if (tipo) {
-        url += `&tipoServico=${tipo}`;
-      }
-    } else { // Sem filtro de status (carregamento inicial por tipo ou "Todos")
+      if (tipo) url += `&tipoServico=${tipo}`;
+    } else {
       url = `${API_URL}/servicos?size=10&page=${page}`;
-      if (tipo) {
-        url += `&tipoServico=${tipo}`;
-      }
+      if (tipo) url += `&tipoServico=${tipo}`;
     }
+    // console.log('URL da Requisição:', url);
 
-    axios.get(url).then(result => {
-      setServicos(result.data.content || []);
-      setTotalPages(result.data.totalPages || 0);
-      setCurrentPage(result.data.number || 0);
-    }).catch(error => {
-      console.error("Erro ao buscar serviços:", error);
-      let backendMessage = 'Erro ao buscar serviços.'; // Default message
-      if (error.response && error.response.data) {
-        if (error.response.data.erros && error.response.data.erros.length > 0 && error.response.data.erros[0].message) {
-          backendMessage = error.response.data.erros[0].message;
-        } else if (error.response.data.message) {
-          backendMessage = error.response.data.message;
-        } else if (error.response.data.error) {
-          backendMessage = error.response.data.error;
+    try {
+      const result = await axios.get(url, { signal: controller.signal });
+      if (controller && !controller.signal.aborted) {
+        // console.log('Requisição bem-sucedida. Dados:', result.data);
+        setServicos(result.data.content || []);
+        setTotalPages(result.data.totalPages || 0);
+        setCurrentPage(result.data.number || 0);
+        lastLoadedParams.current = { page: result.data.number, status, tipo };
+      }
+    } catch (error) {
+      if (axios.isCancel(error)) {
+        // console.log('Requisição cancelada (axios.isCancel).');
+      } else if (controller && !controller.signal.aborted) {
+        console.error("Erro ao buscar serviços:", error);
+        let backendMessage = 'Erro ao buscar serviços.';
+        if (error.response && error.response.data) {
+          if (error.response.data.erros && error.response.data.erros.length > 0 && error.response.data.erros[0].message) {
+            backendMessage = error.response.data.erros[0].message;
+          } else if (error.response.data.message) {
+            backendMessage = error.response.data.message;
+          } else if (error.response.data.error) {
+            backendMessage = error.response.data.error;
+          }
         }
+        toast.error(backendMessage);
+        setServicos([]);
+        setTotalPages(0);
+        // Se a carga falhou, resetar lastLoadedParams para permitir nova tentativa com mesmos params
+        lastLoadedParams.current = { page: undefined, status: undefined, tipo: undefined }; 
       }
-      toast.error(backendMessage);
-      setServicos([]);
-      setTotalPages(0);
-      setCurrentPage(0);
-    });
-  };
+    } finally {
+      if (activeRequestController.current === controller) {
+        activeRequestController.current = null;
+      }
+    }
+  }, []);
 
   useEffect(() => {
-    // Quando tipoServico muda, reseta o filtro de status e carrega a primeira página do novo tipo
-    setActiveStatusFilter(null); // Reseta o filtro de status
-    loadServicos(0, null, tipoServico);
-  }, [tipoServico, atualizar]); // 'atualizar' pode ser usado para forçar recarga
+    const controller = new AbortController();
+    let desiredPage = currentPage;
+    let desiredStatus = activeStatusFilter;
+    let stateUpdateNeeded = false;
+    let forceReloadDueToAtualizar = false;
 
-  useEffect(() => {
-    // Carrega os dados sempre que currentPage ou activeStatusFilter mudar, respeitando o tipoServico
-    // Este useEffect secundário reage a mudanças de página ou de filtro de status explícito.
-    // A carga inicial e a mudança de tipoServico são tratadas pelo useEffect acima.
-    // Evitar chamar se tipoServico acabou de mudar e o useEffect acima já vai rodar.
-    if (!tipoServico || activeStatusFilter !== null) { // Condição para evitar dupla chamada na mudança de tipoServico
-        loadServicos(currentPage, activeStatusFilter, tipoServico);
+    if (prevAtualizar.current !== atualizar) {
+        // console.log("useEffect: `atualizar` mudou. Preparando para forçar recarga.");
+        forceReloadDueToAtualizar = true;
+        prevAtualizar.current = atualizar;
     }
-  }, [currentPage]); // Dependência principal para paginação
-  
-  // Este useEffect é para quando o activeStatusFilter muda E NÃO é uma mudança de tipoServico
-  // que já reseta e carrega.
-   useEffect(() => {
-    if (activeStatusFilter !== null) { // Apenas se um filtro de status for explicitamente setado
-        loadServicos(0, activeStatusFilter, tipoServico); // Sempre volta para a página 0 ao mudar filtro de status
+
+    if (lastLoadedParams.current.tipo !== tipoServico) {
+        // console.log(`useEffect: tipoServico (${tipoServico}) mudou. Resetando para página 0, filtro null.`);
+        desiredPage = 0;
+        desiredStatus = null;
+        if (currentPage !== 0) { setCurrentPage(0); stateUpdateNeeded = true; }
+        if (activeStatusFilter !== null) { setActiveStatusFilter(null); stateUpdateNeeded = true; }
     }
-    // Se activeStatusFilter é null, a carga é gerenciada pelo primeiro useEffect (mudança de tipo) 
-    // ou pelo findByAll (que também não seta activeStatusFilter)
-  }, [activeStatusFilter]);
+    else if (lastLoadedParams.current.status !== activeStatusFilter && lastLoadedParams.current.tipo === tipoServico) {
+        // console.log(`useEffect: activeStatusFilter (${activeStatusFilter}) mudou. Resetando para página 0.`);
+        desiredPage = 0;
+        if (currentPage !== 0) { setCurrentPage(0); stateUpdateNeeded = true; }
+    }
+
+    if (stateUpdateNeeded && !forceReloadDueToAtualizar) {
+        // console.log("useEffect: Atualização de estado (página/filtro) pendente. Abortando e aguardando próximo ciclo.");
+        controller.abort(); 
+        return; 
+    }
+
+    const paramsForLoad = { page: desiredPage, status: desiredStatus, tipo: tipoServico };
+    
+    // console.log('useEffect: Chamando loadServicos com:', paramsForLoad, 'Forçar:', forceReloadDueToAtualizar);
+    loadServicos(paramsForLoad.page, paramsForLoad.status, paramsForLoad.tipo, controller, forceReloadDueToAtualizar);
+
+    return () => {
+        // console.log('Cleanup do useEffect principal, abortando controller.');
+        controller.abort();
+    };
+  // Adicionado loadServicos à lista de dependências do useEffect principal
+  }, [tipoServico, atualizar, activeStatusFilter, currentPage, loadServicos]);
 
   function handleChange(event) {
     setServico({ ...servico, [event.target.name]: event.target.value });
@@ -246,16 +289,13 @@ function Servicos() {
   }
 
   function findByAll() {
-    setActiveStatusFilter(null); // Limpa o filtro de status
-    setCurrentPage(0); // Volta para a primeira página
-    // A carga será feita pelo useEffect que observa tipoServico (se mudar) ou chamando loadServicos diretamente
-    loadServicos(0, null, tipoServico); 
+    setActiveStatusFilter(null);
+    // setCurrentPage(0); // O useEffect principal lidará com o reset da página se necessário
   }
 
   function findByPayment (number) {
-    setActiveStatusFilter(number); // Define o filtro de status ativo
-    setCurrentPage(0); // Volta para a primeira página ao aplicar novo filtro de status
-    // A carga será feita pelo useEffect que observa activeStatusFilter
+    setActiveStatusFilter(number);
+    // setCurrentPage(0); // O useEffect principal lidará com o reset da página se necessário
   }
 
   return (
