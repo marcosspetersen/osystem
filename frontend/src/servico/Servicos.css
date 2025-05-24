@@ -1,5 +1,258 @@
-.container{
-    margin-top: 20px;
-    margin-bottom: 10px;
+/* Estilos para a página de Serviços */
+.servicos-container {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.servicos-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.servicos-header h1 {
+  font-size: 2.5rem;
+  color: #333;
+  width: 100%;
+}
+
+/* Contêiner para o botão Novo Serviço */
+.novo-servico-btn-container {
+  text-align: center;
+  margin-top: 10px;
+  margin-bottom: 25px;
+}
+
+/* Botão Novo Serviço específico */
+.btn-novo-servico {
+  background-color: white;
+  color: #c62828;
+  border: 2px solid #c62828;
+  padding: 15px 35px;
+  font-size: 1.3rem;
+  border-radius: 5px;
+  cursor: pointer;
+  text-decoration: none !important;
+  font-weight: bold;
+}
+
+.btn-novo-servico:hover {
+  background-color: #f0f0f0;
+  color: #a32020;
+  border-color: #a32020;
+  text-decoration: none !important;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.table th,
+.table td {
+  border: 1px solid #ddd;
+  padding: 12px;
+  text-align: left;
+}
+
+.table th {
+  background-color: #f0f0f0;
+  font-weight: bold;
+}
+
+.table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.table tr:hover {
+  background-color: #f1f1f1;
+}
+
+/* Estilo geral para botões, se necessário fora da tabela */
+.btn {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem; 
+  margin-right: 5px; 
+  text-decoration: none !important; 
+  line-height: 1.2;
+}
+
+/* Botões especificamente DENTRO da tabela (Opções) */
+.table .btn {
+  padding: 5px 8px; /* Padding reduzido */
+  font-size: 0.8rem; /* Tamanho da fonte reduzido */
+  margin-right: 3px; /* Margem levemente reduzida */
+  /* Herda outras propriedades de .btn ou pode sobrescrever se necessário */
+}
+
+/* Estilos específicos para botões de filtro */
+.filtros .btn {
+  background-color: #000000;
+  color: white;
+  margin-right: 8px;
+  margin-bottom: 5px;
+}
+
+.filtros .btn:hover {
+  background-color: #333333;
+  color: white;
+}
+
+.btn strong {
+  font-size: 1.05rem;
+  font-weight: bold;
+}
+
+/* Garantir que text-decoration:none seja aplicado em hover também se necessário */
+.btn:hover {
+  text-decoration: none !important;
+}
+
+.btn-success {
+  background-color: #28a745;
+  color: white;
+}
+
+/* Removendo a cor azul de .btn-primary globalmente se ela só é usada na tabela 
+   e agora queremos que seja cinza lá. 
+   Se .btn-primary for usado em outros lugares com a cor azul, 
+   a regra .table .btn-primary acima já tem especificidade suficiente para sobrescrever.
+   Vou comentar a regra .btn-primary original por enquanto.
+*/
+/*
+.btn-primary {
+  background-color: #007bff;
+  color: white;
+}
+*/
+
+.btn-warning {
+  background-color: #ffc107;
+  color: #212529;
+}
+
+.btn-danger {
+  background-color: #dc3545;
+  color: white;
+}
+
+.btn-secondary {
+  background-color: #6c757d;
+  color: white;
+}
+
+/* Estilos para o Modal */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: white;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  width: 90%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 10px;
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.modal-close-btn {
+  background: none;
+  border: none;
+  font-size: 1.8rem;
+  cursor: pointer;
+  color: #888;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: #555;
+}
+
+.form-control {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.form-actions {
+  margin-top: 20px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.form-actions .btn {
+  margin-left: 10px;
+}
+
+/* Estilos para o container da Paginação */
+.paginacao-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.paginacao-container button {
+  margin: 0 10px; /* Espaço entre os botões e o texto da página */
+  /* Reutiliza estilos de .btn se aplicável, ou defina aqui */
+  /* Exemplo: padding: 8px 12px; */
+}
+
+.paginacao-container span {
+  font-size: 1rem;
+  color: #333;
+}
+
+/* Botão Alterar (btn-primary) especificamente DENTRO da tabela */
+.table .btn-primary {
+  background-color: #A9A9A9; /* Cinza mais escuro (DarkGray) */
+  color: black; /* Texto preto */
+  /* Sobrescreve o azul padrão do btn-primary */
+}
+
+.table .btn-primary:hover {
+  background-color: #808080; /* Cinza ainda mais escuro (Gray) no hover */
+  color: black; /* Texto preto também no hover */
 }
 

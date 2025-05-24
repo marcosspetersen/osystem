@@ -1,11 +1,18 @@
 import './App.css';
-import Routes from './Routes';
+import RoutesComponent from './Routes';
 import {ToastContainer} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import Navbar from './Navbar';
+import Footer from './Footer';
 
 function App() {
   return (
     <>
-      <Routes/>
+      <Navbar />
+      <div style={{ flex: '1 0 auto' }}>
+        <RoutesComponent />
+      </div>
+      <Footer />
       <ToastContainer />
     </>
   );

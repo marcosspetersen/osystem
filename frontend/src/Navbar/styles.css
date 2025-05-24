@@ -1,29 +1,88 @@
+/* Navbar/styles.css - Estilo Chaveiro João */
 .main-navbar {
-    height: 70px;
-    background-color: #4169E1;
-    padding-left: 45px;
+    background: #c62828; /* Vermelho do Chaveiro João */
+    color: white;
+    padding: 1rem 2rem;
     display: flex;
+    flex-direction: column; /* Padrão mobile-first */
     align-items: center;
+    position: sticky; /* Mantém no topo */
+    top: 0;
+    z-index: 1000; /* Sobrepor outros conteúdos */
 }
 
-.logo-text {
-    font-weight: 700;
-    font-size: 24px;
-    line-height: 33px;
-    letter-spacing: -0.015em;
-    color: #FFFFFF;
-    margin-left: 15px;
+.navbar-brand {
+    display: flex; /* Para alinhar ícone e título */
+    align-items: center;
+    text-decoration: none;
+    color: white;
+}
+
+.navbar-icon {
+    height: 45px; /* Alterado para 45px */
+    width: 45px;  /* Alterado para 45px */
+    margin-right: 10px; /* Espaço entre ícone e título */
+    border: 2px solid white; /* Borda aumentada para 2px */
+    border-radius: 50%; /* Para a borda redonda */
+    padding: 0; /* Padding removido */
+    display: flex; /* Para centralizar o SVG dentro se ele for menor que o padding+border */
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box; /* Para que padding e border não aumentem o tamanho total além de 40x40 */
+}
+
+/* Estilos para o novo ícone SVG (key-svgrepo-com.svg) */
+.custom-key-icon circle {
+    fill: transparent !important; /* Torna o círculo de fundo transparente */
+}
+
+.custom-key-icon path {
+    fill: #FFFFFF !important; /* Garante que o caminho da chave seja branco */
+}
+
+.navbar-title {
+    /* O h1 dentro de .main-navbar */
+    font-size: 1.8rem; /* Ajuste o tamanho conforme necessário */
+    margin: 0 0 0.5rem 0; /* Espaçamento inferior no mobile */
+    font-weight: bold;
+    text-align: center;
+}
+
+.nav-links-wrapper {
+    /* Corresponde à tag <nav> do Chaveiro João */
+    margin-top: 0.5rem;
+}
+
+.nav-links-wrapper a {
+    color: white;
+    margin: 0 0.5rem;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1rem; /* Ajuste o tamanho */
     }
 
-.navbar-logo{
-    height: 50px;
+.nav-links-wrapper a:hover {
+    text-decoration: underline;
 }
 
-@media only screen and (max-width: 768px) {
+/* Ocultar o toggler do menu hamburguer que tínhamos antes */
+.navbar-toggler {
+    display: none;
+}
+
+/* Estilos para desktop, conforme @media do Chaveiro João */
+@media (min-width: 768px) {
     .main-navbar {
-        height: 70px;
-        padding-left: 0px;
-        align-items: center;
-        justify-content: center;
+        flex-direction: row;
+        justify-content: space-around; /* Alterado de space-between para space-around */
+        align-items: center; /* Garantir alinhamento vertical */
+    }
+
+    .navbar-title {
+        margin: 0; /* Remover margem no desktop */
+    }
+
+    .nav-links-wrapper {
+        margin-top: 0;
     }
 }

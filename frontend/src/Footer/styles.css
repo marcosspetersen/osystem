@@ -1,20 +1,19 @@
+/* Footer/styles.css - Estilo Chaveiro João Modificado */
 .main-footer {
-  padding-top: 15px;
-  padding-bottom: 15px;
-  background-color: #708090;
-  font-weight: normal;
-  font-size: 12px;
-  line-height: 16px;
+  background: #222; /* Cinza bem escuro, "preto claro" */
+  padding: 1rem;
   text-align: center;
-  color: #FFF;
+  font-size: 0.9rem;
+  color: #fff; /* Letras brancas */
+  border-top: 1px solid #444; /* Borda um pouco mais escura para combinar */
 }
 
-.footer-icons {
-  margin-top: 10px;
-  display: flex;
-  justify-content: center;
+.footer-text {
+  margin: 0;
 }
 
-.footer-icons > * {
-  margin-right: 5px;
+/* Remover estilos de .footer-icons e .footer-link se não forem mais usados */
+.footer-icons,
+.footer-link {
+  display: none; /* Ocultar por enquanto, pode ser re-adicionado se necessário */
 }
