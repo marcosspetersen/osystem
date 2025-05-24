@@ -31,15 +31,6 @@
     box-sizing: border-box; /* Para que padding e border não aumentem o tamanho total além de 40x40 */
 }
 
-/* Estilos para o novo ícone SVG (key-svgrepo-com.svg) */
-.custom-key-icon circle {
-    fill: transparent !important; /* Torna o círculo de fundo transparente */
-}
-
-.custom-key-icon path {
-    fill: #FFFFFF !important; /* Garante que o caminho da chave seja branco */
-}
-
 .navbar-title {
     /* O h1 dentro de .main-navbar */
     font-size: 1.8rem; /* Ajuste o tamanho conforme necessário */

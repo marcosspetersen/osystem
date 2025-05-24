@@ -1,6 +1,5 @@
 import './styles.css';
 import { Link, useLocation } from 'react-router-dom';
-import { ReactComponent as NewKeyIcon } from '../key-svgrepo-com.svg';
 
 function Navbar() {
     const location = useLocation();
@@ -28,7 +27,7 @@ function Navbar() {
         <header className="main-navbar">
             <div className="navbar-brand">
                 <Link to="/" style={{ textDecoration: 'none', color: 'inherit', display: 'flex', alignItems: 'center' }}>
-                    <NewKeyIcon className="navbar-icon custom-key-icon" />
+                    <img src={`${process.env.PUBLIC_URL}/key-icon.svg`} alt="OSystem Logo" className="navbar-icon custom-key-icon" />
                     <h1 className='navbar-title'>OSystem</h1>
                 </Link>
             </div>

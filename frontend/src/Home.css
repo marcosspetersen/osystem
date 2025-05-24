@@ -2,6 +2,8 @@
 
 .home-container {
   /* Pode adicionar padding ou margens globais para a Home aqui se necessário */
+  background-color: #f0f0f0; /* Cinza claro para o fundo da página Home */
+  min-height: 100vh; /* Garante que o fundo cubra toda a altura da viewport */
 }
 
 .cta {
@@ -41,6 +43,9 @@
   color: #c62828; /* Vermelho do Chaveiro João */
   margin-bottom: 1.5rem; /* Diminuído de 2rem */
   font-weight: bold; /* Adicionado negrito */
+  /* Ajustando text-shadow para remover sombra superior e esquerda */
+  text-shadow: 
+     1px  1px 0 #000; /* Sombra apenas para baixo e para a direita */
 }
 
 .servicos-grid,
