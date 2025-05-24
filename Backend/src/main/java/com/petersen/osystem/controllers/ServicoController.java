@@ -1,7 +1,7 @@
 package com.petersen.osystem.controllers;
 
 import com.petersen.osystem.dto.ServicoDTO;
-import com.petersen.osystem.entities.PagamentoStatus;
+import com.petersen.osystem.entities.TipoServico;
 import com.petersen.osystem.services.ServicoService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,19 +28,25 @@ public class ServicoController {
 
     @GetMapping
     public ResponseEntity<Page<ServicoDTO>> findAll(
-        @RequestParam(name = "name", defaultValue = "") String name, Pageable pageable){
-        Page<ServicoDTO> dto = service.findAll(name, pageable);
+            @RequestParam(name = "name", defaultValue = "") String name,
+            @RequestParam(name = "tipoServico", required = false) TipoServico tipoServico,
+            @RequestParam(name = "orderBy", required = false) String orderBy,
+            Pageable pageable) {
+        Page<ServicoDTO> dto = service.findAll(name, tipoServico, orderBy, pageable);
         return ResponseEntity.ok(dto);
     }
 
     @GetMapping("/payment")
     public ResponseEntity<Page<ServicoDTO>> findByPayment(
-            @RequestParam(name = "status") Integer status, Pageable pageable){
-        Page<ServicoDTO> dto = service.findByPayment(status, pageable);
+            @RequestParam(name = "status") Integer status,
+            @RequestParam(name = "tipoServico", required = false) TipoServico tipoServico,
+            @RequestParam(name = "orderBy", required = false) String orderBy,
+            Pageable pageable) {
+        Page<ServicoDTO> dto = service.findByPayment(status, tipoServico, orderBy, pageable);
         return ResponseEntity.ok(dto);
     }
 
-    @PostMapping
+        @PostMapping
     public ResponseEntity<ServicoDTO> insert(@Valid @RequestBody ServicoDTO dto) {
         dto = service.insert(dto);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")

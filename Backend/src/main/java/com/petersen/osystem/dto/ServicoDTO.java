@@ -2,6 +2,7 @@ package com.petersen.osystem.dto;
 
 import com.petersen.osystem.entities.PagamentoStatus;
 import com.petersen.osystem.entities.Servico;
+import com.petersen.osystem.entities.TipoServico;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import jakarta.validation.constraints.*;
@@ -19,13 +20,14 @@ public class ServicoDTO {
     private Date dataInicio;
     @Temporal(TemporalType.DATE)
     private Date dataTermino;
-    @Size(min = 10, message = "Descrição precisa ter no ménimo 10 caracteres")
+    @Size(min = 10, message = "Descrição precisa ter no mínimo 10 caracteres")
     @NotBlank(message = "Campo requerido")
     private String descricaoServico;
     @PositiveOrZero(message = "O preço deve ser positivo")
     private Double valorServico;
     @PositiveOrZero(message = "O preço deve ser positivo")
     private Double valorPago;
+    private TipoServico tipoServico;
     @PastOrPresent
     @Temporal(TemporalType.DATE)
     private Date dataPagamento;
@@ -35,7 +37,7 @@ public class ServicoDTO {
     }
 
     public ServicoDTO(Long id, String nomeCliente, Date dataInicio, Date dataTermino, String descricaoServico,
-                      Double valorServico, Double valorPago, Date dataPagamento, PagamentoStatus status) {
+                      Double valorServico, Double valorPago, TipoServico tipoServico, Date dataPagamento, PagamentoStatus status) {
         this.id = id;
         this.nomeCliente = nomeCliente;
         this.dataInicio = dataInicio;
@@ -43,6 +45,7 @@ public class ServicoDTO {
         this.descricaoServico = descricaoServico;
         this.valorServico = valorServico;
         this.valorPago = valorPago;
+        this.tipoServico = tipoServico;
         this.dataPagamento = dataPagamento;
         this.status = status;
     }
@@ -55,6 +58,7 @@ public class ServicoDTO {
         descricaoServico= entity.getDescricaoServico();
         valorServico = entity.getValorServico();
         valorPago = entity.getValorPago();
+        tipoServico = entity.getTipoServico();
         dataPagamento= entity.getDataPagamento();
         status = entity.getStatus();
     }
@@ -113,6 +117,14 @@ public class ServicoDTO {
 
     public void setValorPago(Double valorPago) {
         this.valorPago = valorPago;
+    }
+
+    public TipoServico getTipoServico() {
+        return tipoServico;
+    }
+
+    public void setTipoServico(TipoServico tipoServico) {
+        this.tipoServico = tipoServico;
     }
 
     public Date getDataPagamento() {

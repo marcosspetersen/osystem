@@ -3,6 +3,7 @@ package com.petersen.osystem.services;
 import com.petersen.osystem.dto.ServicoDTO;
 import com.petersen.osystem.entities.PagamentoStatus;
 import com.petersen.osystem.entities.Servico;
+import com.petersen.osystem.entities.TipoServico;
 import com.petersen.osystem.repositories.ServicoRepository;
 import com.petersen.osystem.services.exceptions.DatabaseException;
 import com.petersen.osystem.services.exceptions.ResourceNotFoundException;
@@ -10,16 +11,16 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
-import java.util.List;
 
 @Service
 public class ServicoService {
@@ -35,16 +36,19 @@ public class ServicoService {
     }
 
     @Transactional(readOnly = true)
-    public Page<ServicoDTO> findAll(String nomeCliente, Pageable pageable) {
-        Page<Servico> result = servicoRepository.searchByName(nomeCliente, pageable);
-        return result.map(x -> new ServicoDTO(x));
+    public Page<ServicoDTO> findAll(String nomeCliente, TipoServico tipoServico, String orderBy, Pageable pageable) {
+        Pageable pageableWithSort = getPageableWithSort(orderBy, pageable);
+        Page<Servico> result = servicoRepository.searchByName(nomeCliente, tipoServico, pageableWithSort);
+        return result.map(ServicoDTO::new);
     }
 
     @Transactional(readOnly = true)
-    public Page<ServicoDTO> findByPayment(Integer status, Pageable pageable) {
-        Page<Servico> result = servicoRepository.searchByPayment(status, pageable);
-        return result.map(x -> new ServicoDTO(x));
+    public Page<ServicoDTO> findByPayment(Integer status, TipoServico tipoServico, String orderBy, Pageable pageable) {
+        Pageable pageableWithSort = getPageableWithSort(orderBy, pageable);
+        Page<Servico> result = servicoRepository.searchByPayment(status, tipoServico, pageableWithSort);
+        return result.map(ServicoDTO::new);
     }
+
 
     @Transactional
     public ServicoDTO insert(ServicoDTO dto) {
@@ -103,8 +107,16 @@ public class ServicoService {
         entity.setDescricaoServico(dto.getDescricaoServico());
         entity.setValorServico(dto.getValorServico());
         entity.setValorPago(dto.getValorPago());
+        entity.setTipoServico(dto.getTipoServico());
         entity.setDataPagamento(dto.getDataPagamento());
         entity.setStatus(dto.getStatus());
+    }
+
+    private Pageable getPageableWithSort(String orderBy, Pageable pageable) {
+        Sort sort = (orderBy != null && !orderBy.isEmpty())
+                ? Sort.by(Sort.Direction.DESC, orderBy)
+                : Sort.by(Sort.Direction.ASC, "id");
+        return PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
     }
 
     private void verificaPagamento (ServicoDTO dto) {

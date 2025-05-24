@@ -23,6 +23,10 @@ public class Servico {
     private Double valorServico;
     private Double valorPago;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "tipo_servico")
+    private TipoServico tipoServico;
+
     @Temporal(TemporalType.DATE)
     private Date dataPagamento;
     private Integer status;
@@ -30,8 +34,7 @@ public class Servico {
     public Servico() {
     }
 
-    public Servico(Long id, String nomeCliente, Date dataInicio, Date dataTermino, String descricaoServico,
-                   Double valorServico, Double valorPago, Date dataPagamento, PagamentoStatus status) {
+    public Servico(Long id, String nomeCliente, Date dataInicio, Date dataTermino, String descricaoServico, Double valorServico, Double valorPago, TipoServico tipoServico, Date dataPagamento, Integer status) {
         this.id = id;
         this.nomeCliente = nomeCliente;
         this.dataInicio = dataInicio;
@@ -39,8 +42,9 @@ public class Servico {
         this.descricaoServico = descricaoServico;
         this.valorServico = valorServico;
         this.valorPago = valorPago;
+        this.tipoServico = tipoServico;
         this.dataPagamento = dataPagamento;
-        setStatus(status);
+        this.status = status;
     }
 
     public Long getId() {
@@ -109,6 +113,14 @@ public class Servico {
 
     public PagamentoStatus getStatus() {
         return PagamentoStatus.valueOf(status);
+    }
+
+    public TipoServico getTipoServico() {
+        return tipoServico;
+    }
+
+    public void setTipoServico(TipoServico tipoServico) {
+        this.tipoServico = tipoServico;
     }
 
     public void setStatus(PagamentoStatus status) {
